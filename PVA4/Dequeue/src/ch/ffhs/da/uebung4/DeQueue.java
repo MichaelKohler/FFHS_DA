@@ -68,20 +68,24 @@ public class DeQueue<T> {
 		for (String aString : testList)
 			System.out.println(aString);
 
-		System.out.println("DeQueue:");
-		Iterator<String> it = queue.iterator();
+		System.out.println("DeQueue first to last:");
+		Iterator<String> it = queue.firstToLastIterator();
 		while (it.hasNext())
 			System.out.println(it.next());
 
-		System.out.println("DeQueue:");
-		it = queue.iterator();
+		System.out.println("DeQueue last to first:");
+		it = queue.lastToFirstIterator();
 		while (it.hasNext())
 			System.out.println(it.next());
 
 	}
 
-	public Iterator<T> iterator() {
-		return new QueueIterator(first);
+	public Iterator<T> firstToLastIterator() {
+		return new FirstToLastIterator(first);
+	}
+
+	public Iterator<T> lastToFirstIterator() {
+		return new LastToFirstIterator(first);
 	}
 
 	@SuppressWarnings("hiding")
@@ -121,10 +125,10 @@ public class DeQueue<T> {
 		}
 	}
 
-	public class QueueIterator implements Iterator<T> {
+	public class FirstToLastIterator implements Iterator<T> {
 		private Node<T> current;
 
-		public QueueIterator(Node<T> first) {
+		public FirstToLastIterator(Node<T> first) {
 			current = first;
 		}
 
@@ -137,6 +141,31 @@ public class DeQueue<T> {
 		public T next() {
 			Node<T> nextNode = current;
 			current = current.getNext();
+			return nextNode.getItem();
+		}
+
+		@Override
+		public void remove() {
+			// no remove
+		}
+	}
+
+	public class LastToFirstIterator implements Iterator<T> {
+		private Node<T> current;
+
+		public LastToFirstIterator(Node<T> first) {
+			current = last;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return current != null;
+		}
+
+		@Override
+		public T next() {
+			Node<T> nextNode = current;
+			current = current.getPrev();
 			return nextNode.getItem();
 		}
 
