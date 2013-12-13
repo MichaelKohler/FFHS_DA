@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public class DeQueue<T> implements Iterable<T>, Iterator<T>{
+public class DeQueue<T> {
 
 	private Node<T> first = null;
 	private Node<T> last = null;
@@ -46,54 +46,42 @@ public class DeQueue<T> implements Iterable<T>, Iterator<T>{
 	public Node<T> getLastNode() {
 		return this.last;
 	}
-	
+
 	public Node<T> removeFirstNode() {
 		Node<T> ret = this.first;
 		this.first = this.first.getNext();
 		return ret;
 	}
-	
+
 	public Node<T> removeLastNode() {
 		Node<T> ret = this.last;
 		this.last = this.last.getPrev();
 		return ret;
 	}
-	
-	@Override
-	public Iterator<T> iterator() {
-		return this;
-	}
-	
-	@Override
-	public boolean hasNext() {
-		return this.first != null;
-	}
-
-	@Override
-	public T next() {
-		Node<T> bla = this.removeFirstNode();
-		return bla.getItem();
-	}
-
-	@Override
-	public void remove() {
-		// no remove
-	}
 
 	public static void main(String[] args) {
-		String[] testArray = {"asdf", "qwer", "yxcv"};
+		String[] testArray = { "asdf", "qwer", "yxcv" };
 		List<String> testList = Arrays.asList(testArray);
 		DeQueue<String> queue = new DeQueue<String>(testList);
-		
-		
+
 		System.out.println("List:");
 		for (String aString : testList)
 			System.out.println(aString);
-		
+
 		System.out.println("DeQueue:");
-		for(String aString : queue)
-			System.out.println(aString);
-		
+		Iterator<String> it = queue.iterator();
+		while (it.hasNext())
+			System.out.println(it.next());
+
+		System.out.println("DeQueue:");
+		it = queue.iterator();
+		while (it.hasNext())
+			System.out.println(it.next());
+
+	}
+
+	public Iterator<T> iterator() {
+		return new QueueIterator(first);
 	}
 
 	@SuppressWarnings("hiding")
@@ -101,7 +89,6 @@ public class DeQueue<T> implements Iterable<T>, Iterator<T>{
 		private T item;
 		private Node<T> next;
 		private Node<T> prev;
-
 
 		public Node(T aItem) {
 			this.setItem(aItem);
@@ -131,6 +118,31 @@ public class DeQueue<T> implements Iterable<T>, Iterator<T>{
 
 		public void setItem(T item) {
 			this.item = item;
+		}
+	}
+
+	public class QueueIterator implements Iterator<T> {
+		private Node<T> current;
+
+		public QueueIterator(Node<T> first) {
+			current = first;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return current != null;
+		}
+
+		@Override
+		public T next() {
+			Node<T> nextNode = current;
+			current = current.getNext();
+			return nextNode.getItem();
+		}
+
+		@Override
+		public void remove() {
+			// no remove
 		}
 	}
 
